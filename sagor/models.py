@@ -11,7 +11,7 @@ class Gateway(models.Model):
 
 
     broker_url = models.URLField()
-    ip = models.IPAddressField()
+    ip = models.GenericIPAddressField()
     status = models.CharField(
         max_length = 250,
         choices=Status.choices,
@@ -26,7 +26,7 @@ class Gateway(models.Model):
     )
 
 
-class Tanks(models.Model):
+class Tank(models.Model):
     class FishType(models.TextChoices):
         TILAPIA = 'TILAPIA', 'Tilapia'
     
@@ -54,8 +54,7 @@ class Tanks(models.Model):
 
     gateway = models.ForeignKey(
         'Gateway',
-        # consider changing to PROTECT
-        on_delete=models.SET_NULL,
+        on_delete=models.PROTECT,
         related_name='tanks',
     )
 
@@ -75,7 +74,7 @@ class Package(models.Model):
 
     tank = models.ForeignKey(
         'Package',
-        on_delete=models.SET_NULL,
+        on_delete=models.PROTECT,
         related_name='packages',
     )
 
@@ -105,7 +104,7 @@ class PumpedFood(models.Model):
         ERROR = 'ERROR', 'Error'
 
     
-    quantity = models.DecimalField()
+    quantity = models.DecimalField(decimal_places=4, max_digits=10)
     status = models.CharField(
         max_length=250,
         choices=Status.choices,
@@ -130,7 +129,7 @@ class BaseSensor(models.Model):
         choices=ReadingStatus.choices,
         default=ReadingStatus.SANE,
     )
-    run_every = models.DecimalField()
+    run_every = models.DecimalField(decimal_places=4, max_digits=10)
 
     package = models.ForeignKey(
         'Package',
@@ -139,11 +138,11 @@ class BaseSensor(models.Model):
     )
 
 class PHSensor(BaseSensor):
-    value = models.DecimalField()
+    value = models.DecimalField(decimal_places=10, max_digits=10)
 
 
 class TempratureSensor(BaseSensor):
-    value = models.DecimalField()
+    value = models.DecimalField(decimal_places=10, max_digits=10)
 
 
 class CameraSensor(BaseSensor):
