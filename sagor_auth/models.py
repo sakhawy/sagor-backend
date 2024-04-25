@@ -30,6 +30,7 @@ class SagorUserManager(BaseUserManager):
 class SagorUser(AbstractBaseUser):
     username = models.CharField(max_length=50, unique=True)
     email = models.EmailField(max_length=100, unique=True)
+    phone_number = models.CharField(max_length=11, unique=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     objects = SagorUserManager()
