@@ -2,6 +2,9 @@ from __future__ import annotations
 
 from .base import *
 
+
+print("================== PROD =================")
+
 DEBUG = bool(os.getenv('DEBUG'))
 
 if os.getenv('ENVIRONMENT') == 'production':
