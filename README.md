@@ -3,11 +3,11 @@
 
 - Set up database
 ```
-postgres=# CREATE DATABASE "sagor-database";
+postgres=# CREATE DATABASE "sagordatabase";
 CREATE DATABASE
 postgres=# CREATE USER sagor WITH SUPERUSER PASSWORD 'sagor';
 CREATE ROLE
-postgres=# GRANT ALL PRIVILEGES ON DATABASE "sagor-database" TO sagor;
+postgres=# GRANT ALL PRIVILEGES ON DATABASE "sagordatabase" TO sagor;
 GRANT
 postgres=# 
 ```
