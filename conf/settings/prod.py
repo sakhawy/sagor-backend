@@ -5,4 +5,5 @@ from .base import *
 DEBUG = bool(os.getenv('DEBUG'))
 
 if os.getenv('ENVIRONMENT') == 'production':
-    pass
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
