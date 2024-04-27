@@ -1,0 +1,24 @@
+databases:
+  - name: sagordatabase
+    plan: free
+    databaseName: sagordatabase
+    user: sagor
+
+services:
+  - type: web
+    plan: free
+    name: sagor
+    runtime: python
+    buildCommand: "./scripts/build.sh"
+    startCommand: "python -m gunicorn mysite.asgi:application -k uvicorn.workers.UvicornWorker"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: sagordatabase
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4
+      - key: ENVIRONMENT
+        value: "production"
