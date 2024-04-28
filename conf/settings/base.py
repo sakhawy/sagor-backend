@@ -128,3 +128,15 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=15),
     'ROTATE_REFRESH_TOKENS': True,
 }
+
+MQTT_SERVER = 'broker.emqx.io'
+MQTT_PORT = 1883
+MQTT_KEEPALIVE = 60
+MQTT_USER = ''
+MQTT_PASSWORD = ''
+# It's a public broker so the name has
+# to be a bit verbose so it's unlikely others
+# will randomly use it 
+# NOTE: NO SECURITY IN MIND.
+MQTT_MAIN_TOPIC = 'django/main-sagor-topic/#'
+MQTT_CLIENT_ID_PREFIX = 'sagor_'

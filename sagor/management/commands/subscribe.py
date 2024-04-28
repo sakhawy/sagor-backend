@@ -1,4 +1,7 @@
+from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
+
+from sagor.mqtt import Client
 
 class Command(BaseCommand):
     help = "Subscribes to all Gateways."
@@ -7,4 +10,5 @@ class Command(BaseCommand):
         pass
 
     def handle(self, *args, **options):
-        pass
+        client = Client()
+        client.loop_forever()
