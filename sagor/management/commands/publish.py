@@ -1,3 +1,5 @@
+import json
+
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
@@ -55,4 +57,26 @@ class Command(BaseCommand):
             port=port
         )
 
-        client.publish(msg="test")
+        msg = {
+            "farm": {
+                "id": 1,
+                "gateways": [
+                    {
+                        "id": 1,
+                        "packages": [
+                            {
+                                "id": 1,
+                                "sensors": [
+                                    {
+                                        "type": "pH",
+                                        "value": 0.5
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+
+        client.publish(msg=json.dumps(msg))

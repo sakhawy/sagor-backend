@@ -1,7 +1,36 @@
+from concurrent.futures import ThreadPoolExecutor
+
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
 from sagor.mqtt import Client
+
+
+def save_to_database(payload):
+    # NOTE: This will be super dirty
+    # got no time to fix this dumpster fire
+    farm = payload.pop('farm', None)
+    if farm:
+        gateways = farm.pop('gateways', None)
+        if isinstance(gateways, list):
+            for gateway in gateways:
+                packages = gateway.pop('packages', None)
+                if isinstance(packages, list):
+                    for package in packages:
+                        sensors = package.pop('sensors', None)
+                        if isinstance(sensors, list):
+                            for sensor in sensors:
+                                # save them here!
+                                pass
+                        else:
+                            raise Exception()
+                else:
+                    raise Exception()
+        else:
+            raise Exception()
+    else:
+        raise Exception()
+    
 
 class Command(BaseCommand):
     help = "Subscribes to all Gateways."
@@ -33,7 +62,8 @@ class Command(BaseCommand):
         client = Client(
             topic=topic,
             host=broker,
-            port=port
+            port=port,
+            on_message_callback=save_to_database
         )
 
         client.subscribe()

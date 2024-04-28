@@ -1,3 +1,4 @@
+import json
 import uuid
 
 from django.conf import settings
@@ -10,6 +11,7 @@ class Client:
             topic=settings.MQTT_MAIN_TOPIC,
             host=settings.MQTT_SERVER,
             port=settings.MQTT_PORT,
+            on_message_callback=lambda payload: ...,
             keepalive=settings.MQTT_KEEPALIVE,
             user=settings.MQTT_USER,
             password=settings.MQTT_PASSWORD,
@@ -26,13 +28,19 @@ class Client:
             port=port,
             keepalive=keepalive
         )
+        self.on_message_callback = on_message_callback
 
     def on_connect(self, client, userdata, flags, rc):
         if rc != 0:
             raise Exception('Couldn\'t connect')
 
     def on_message(self, client, userdata, msg):
-        print(msg)
+        try:
+            payload = json.loads(msg.payload.decode())
+        except Exception as e:
+            raise Exception(e)
+        
+        self.on_message_callback(payload)
 
     def subscribe(self):
         try:
