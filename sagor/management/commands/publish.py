@@ -1,27 +1,17 @@
+from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
-from paho.mqtt import client as mqtt_client
 
-def connect_client(topic, broker, port):
-    client = mqtt_client.Client(
-        mqtt_client.CallbackAPIVersion.VERSION1,
-        topic
-    )
+from sagor.mqtt import Client
 
-    # Do some error checking here
-    client.on_connect = None
-    client.connect(broker, port)
-    return client
-
-
-def publish(client, topic, *msgs):
-    # Generator for better control
-    for msg in msgs:
-        result = client.publish(topic, msg) 
-        status = result[0]
-        if status != 0:
-            yield msg, False
-        yield msg, True
-    yield msg, True
+# def publish(client, topic, *msgs):
+#     # Generator for better control
+#     for msg in msgs:
+#         result = client.publish(topic, msg) 
+#         status = result[0]
+#         if status != 0:
+#             yield msg, False
+#         yield msg, True
+#     yield msg, True
 
 
 class Command(BaseCommand):
@@ -29,21 +19,21 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         topic = parser.add_argument(
-            "topic", 
+            "--topic", 
             type=str,
-            default=None
+            default=settings.MQTT_MAIN_TOPIC
         )
         broker = parser.add_argument(
             "--broker", 
             type=str,
             nargs='?',
-            default='broker.emqx.io'
+            default=settings.MQTT_SERVER
         )
         port = parser.add_argument(
             "--port", 
             type=int,
             nargs='?',
-            default=1883
+            default=settings.MQTT_PORT
         )
         messages = parser.add_argument(
             '--messages',
@@ -59,15 +49,10 @@ class Command(BaseCommand):
         port = options['port']
         messages = options['messages']
 
-        client = connect_client(
-            topic,
-            broker,
-            port
+        client = Client(
+            topic=topic,
+            host=broker,
+            port=port
         )
 
-        for sent in publish(
-            client,
-            topic,
-            *messages 
-        ):
-            print(sent)
+        client.publish(msg="test")
