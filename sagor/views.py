@@ -1,39 +1,39 @@
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from sagor import models
 from sagor import serializers
 
 
-class FarmViewSet(ModelViewSet):
+class FarmViewSet(ReadOnlyModelViewSet):
     queryset = models.Farm.objects.all()
     serializer_class = serializers.FarmSerializer
 
 
-class GatewayViewSet(ModelViewSet):
+class GatewayViewSet(ReadOnlyModelViewSet):
     queryset = models.Gateway.objects.all()
     serializer_class = serializers.GatewaySerializer
 
 
-class TankViewSet(ModelViewSet):
+class TankViewSet(ReadOnlyModelViewSet):
     queryset = models.Tank.objects.all()
     serializer_class = serializers.TankSerializer
 
 
-class PackageViewSet(ModelViewSet):
+class PackageViewSet(ReadOnlyModelViewSet):
     queryset = models.Package.objects.all()
     serializer_class = serializers.PackageSerializer
 
 
-class PHSensorReadingViewSet(ModelViewSet):
+class PHSensorReadingViewSet(ReadOnlyModelViewSet):
     queryset = models.PHSensorReading.objects.all()
     serializer_class = serializers.PHSensorReadingSerializer
 
 
-class TempratureSensorReadingViewSet(ModelViewSet):
+class TempratureSensorReadingViewSet(ReadOnlyModelViewSet):
     queryset = models.TempratureSensorReading.objects.all()
     serializer_class = serializers.TempratureSensorReadingSerializer
 
 
-class CameraSensorReadingViewSet(ModelViewSet):
+class CameraSensorReadingViewSet(ReadOnlyModelViewSet):
     queryset = models.CameraSensorReading.objects.all()
     serializer_class = serializers.CameraSensorReadingSerializer
