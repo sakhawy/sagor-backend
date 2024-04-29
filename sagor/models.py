@@ -1,4 +1,7 @@
+import uuid
+
 from django.db import models
+
 
 class TimeStampedModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Created on')
@@ -9,8 +12,15 @@ class TimeStampedModel(models.Model):
         abstract = True
 
 
+def _generate_farm_name():
+        return uuid.uuid4()
+
+
 class Farm(TimeStampedModel):
-    name = models.CharField(max_length=250)
+    name = models.CharField(
+        max_length=250,
+        default=_generate_farm_name
+    )
 
 
 class Gateway(TimeStampedModel):
@@ -92,7 +102,7 @@ class Package(TimeStampedModel):
     last_checked_at = models.DateTimeField(auto_now=True, verbose_name='Last checked at')
 
     tank = models.ForeignKey(
-        'Package',
+        'Tank',
         on_delete=models.PROTECT,
         related_name='packages',
     )
@@ -152,7 +162,9 @@ class BaseSensorReading(TimeStampedModel):
         choices=ReadingStatus.choices,
         default=ReadingStatus.SANE,
     )
-    read_every = models.IntegerField()
+    
+    # in milliseconds
+    read_every = models.IntegerField(default=1000)
 
 
 class PHSensorReading(BaseSensorReading):

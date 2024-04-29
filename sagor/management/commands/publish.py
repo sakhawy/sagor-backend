@@ -79,6 +79,7 @@ class Command(BaseCommand):
                                                 "value": 0.5
                                             }
                                         ],
+                                        "camera_sensor_readings": []
                                     }
                                 ]
                             }
