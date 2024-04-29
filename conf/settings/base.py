@@ -25,6 +25,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'rest_framework',
+    'drf_spectacular',
+    'drf_spectacular_sidecar',
+
     'sagor_auth',
     'sagor',
 ]
@@ -140,3 +144,17 @@ MQTT_PASSWORD = ''
 # NOTE: NO SECURITY IN MIND.
 MQTT_MAIN_TOPIC = 'django/main-sagor-topic/#'
 MQTT_CLIENT_ID_PREFIX = 'sagor_'
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Sagor API',
+    'DESCRIPTION': 'بتوع سمك 🐟',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'SWAGGER_UI_DIST': 'SIDECAR',
+    'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
+    'REDOC_DIST': 'SIDECAR',
+}
