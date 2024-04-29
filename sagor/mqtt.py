@@ -44,7 +44,6 @@ class Client:
 
     def subscribe(self):
         try:
-            print(self.topic)
             self.client.subscribe(self.topic)
             self.client.loop_forever()
         except Exception as e:
