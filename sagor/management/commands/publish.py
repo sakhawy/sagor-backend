@@ -1,27 +1,9 @@
+import json
+
+from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
-from paho.mqtt import client as mqtt_client
 
-def connect_client(topic, broker, port):
-    client = mqtt_client.Client(
-        mqtt_client.CallbackAPIVersion.VERSION1,
-        topic
-    )
-
-    # Do some error checking here
-    client.on_connect = None
-    client.connect(broker, port)
-    return client
-
-
-def publish(client, topic, *msgs):
-    # Generator for better control
-    for msg in msgs:
-        result = client.publish(topic, msg) 
-        status = result[0]
-        if status != 0:
-            yield msg, False
-        yield msg, True
-    yield msg, True
+from sagor.mqtt import Client
 
 
 class Command(BaseCommand):
@@ -29,27 +11,60 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         topic = parser.add_argument(
-            "topic", 
+            "--topic", 
             type=str,
-            default=None
+            default=settings.MQTT_MAIN_TOPIC
         )
         broker = parser.add_argument(
             "--broker", 
             type=str,
             nargs='?',
-            default='broker.emqx.io'
+            default=settings.MQTT_SERVER
         )
         port = parser.add_argument(
             "--port", 
             type=int,
             nargs='?',
-            default=1883
+            default=settings.MQTT_PORT
         )
-        messages = parser.add_argument(
-            '--messages',
+        message = parser.add_argument(
+            '--message',
             type=str,
-            nargs='?',
-            default=None
+            default=
+            '''
+            {
+                "farm": {
+                    "id": 1,
+                    "gateways": [
+                        {
+                            "id": 1,
+                            "tanks": [
+                                {
+                                    "id": 1,
+                                    "packages": [
+                                        {
+                                            "id": 1,
+                                            "ph_sensor_readings": [
+                                                {
+                                                    "value": 0.5
+                                                }
+                                            ],
+                                            "temprature_sensor_readings": [
+                                                {
+                                                    "value": 0.5
+                                                }
+                                            ],
+                                            "camera_sensor_readings": []
+                                        }
+                                    ]
+                                }
+                            ]
+                            
+                        }
+                    ]
+                }
+            }
+            '''
         )
 
     def handle(self, *args, **options):
@@ -57,17 +72,13 @@ class Command(BaseCommand):
         topic = options['topic']
         broker = options['broker']
         port = options['port']
-        messages = options['messages']
+        message = options['message']
 
-        client = connect_client(
-            topic,
-            broker,
-            port
+        client = Client(
+            topic=topic,
+            host=broker,
+            port=port
         )
 
-        for sent in publish(
-            client,
-            topic,
-            *messages 
-        ):
-            print(sent)
+        # using load() to validate JSON
+        client.publish(msg=json.dumps(json.loads(message)))
