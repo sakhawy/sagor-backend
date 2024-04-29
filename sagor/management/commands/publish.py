@@ -63,17 +63,27 @@ class Command(BaseCommand):
                 "gateways": [
                     {
                         "id": 1,
-                        "packages": [
+                        "tanks": [
                             {
                                 "id": 1,
-                                "sensors": [
+                                "packages": [
                                     {
-                                        "type": "pH",
-                                        "value": 0.5
+                                        "id": 1,
+                                        "ph_sensor_readings": [
+                                            {
+                                                "value": 0.5
+                                            }
+                                        ],
+                                        "temprature_sensor_readings": [
+                                            {
+                                                "value": 0.5
+                                            }
+                                        ],
                                     }
                                 ]
                             }
                         ]
+                        
                     }
                 ]
             }

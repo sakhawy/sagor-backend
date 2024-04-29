@@ -1,23 +1,42 @@
 from django.db import models
 
-class Farm(models.Model):
+class TimeStampedModel(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Created on')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Last updated')
+    deleted_at = models.DateTimeField(null=True, blank=True, verbose_name='Deleted on')
+
+    class Meta:
+        abstract = True
+
+
+class Farm(TimeStampedModel):
     name = models.CharField(max_length=250)
 
 
-class Gateway(models.Model):
+class Gateway(TimeStampedModel):
     class Status(models.TextChoices):
         OK = 'OK', 'Ok'
         ERROR = 'ERROR', 'Error'
 
 
-    broker_url = models.URLField()
-    ip = models.GenericIPAddressField()
+    broker_url = models.URLField(
+        null=True, 
+        blank=True
+    )
+    ip = models.GenericIPAddressField(
+        null=True, 
+        blank=True
+    )
     status = models.CharField(
         max_length = 250,
         choices=Status.choices,
         default=Status.OK,
     )
-    mac_address = models.CharField(max_length=250)
+    mac_address = models.CharField(
+        max_length=250,
+        null=True,
+        blank=True
+    )
 
     farm = models.ForeignKey(
         'Farm',
@@ -26,7 +45,7 @@ class Gateway(models.Model):
     )
 
 
-class Tank(models.Model):
+class Tank(TimeStampedModel):
     class FishType(models.TextChoices):
         TILAPIA = 'TILAPIA', 'Tilapia'
     
@@ -59,7 +78,7 @@ class Tank(models.Model):
     )
 
 
-class Package(models.Model):
+class Package(TimeStampedModel):
     class Status(models.TextChoices):
         OK = 'OK', 'Ok'
         ERROR = 'ERROR', 'Error'
@@ -70,7 +89,7 @@ class Package(models.Model):
         choices=Status.choices,
         default=Status.OK
     )
-    last_checked_at = models.DateTimeField()
+    last_checked_at = models.DateTimeField(auto_now=True, verbose_name='Last checked at')
 
     tank = models.ForeignKey(
         'Package',
@@ -78,7 +97,7 @@ class Package(models.Model):
         related_name='packages',
     )
 
-class Pump(models.Model):
+class Pump(TimeStampedModel):
     class Status(models.TextChoices):
         ACTIVE = 'ACTIVE', 'Active'
         INACTIVE = 'INACTIVE', 'Inactive',
@@ -98,7 +117,7 @@ class Pump(models.Model):
     )
 
 
-class PumpedFood(models.Model):
+class PumpedFood(TimeStampedModel):
     class Status(models.TextChoices):
         OK = 'OK', 'Ok'
         ERROR = 'ERROR', 'Error'
@@ -118,7 +137,11 @@ class PumpedFood(models.Model):
     )
 
 
-class BaseSensor(models.Model):
+class BaseSensorReading(TimeStampedModel):
+    class Meta:
+        abstract = True
+
+
     class ReadingStatus(models.TextChoices):
         SANE = 'SANE', 'Sane'
         NOT_SANE = 'NOT_SANE', 'Not sane'
@@ -129,23 +152,30 @@ class BaseSensor(models.Model):
         choices=ReadingStatus.choices,
         default=ReadingStatus.SANE,
     )
-    run_every = models.DecimalField(decimal_places=4, max_digits=10)
+    read_every = models.IntegerField()
 
+
+class PHSensorReading(BaseSensorReading):
+    value = models.DecimalField(decimal_places=10, max_digits=10)
     package = models.ForeignKey(
         'Package',
         on_delete=models.CASCADE,
-        related_name='sensors'
+        related_name='ph_sensor_readings'
     )
 
-class PHSensor(BaseSensor):
+class TempratureSensorReading(BaseSensorReading):
     value = models.DecimalField(decimal_places=10, max_digits=10)
+    package = models.ForeignKey(
+        'Package',
+        on_delete=models.CASCADE,
+        related_name='temprature_sensor_readings'
+    )
 
-
-class TempratureSensor(BaseSensor):
-    value = models.DecimalField(decimal_places=10, max_digits=10)
-
-
-class CameraSensor(BaseSensor):
+class CameraSensorReading(BaseSensorReading):
     value = models.BinaryField()
-
+    package = models.ForeignKey(
+        'Package',
+        on_delete=models.CASCADE,
+        related_name='camera_sensor_readings'
+    )
 

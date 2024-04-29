@@ -1,27 +1,74 @@
-from concurrent.futures import ThreadPoolExecutor
+import uuid
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
 from sagor.mqtt import Client
+from sagor import models as sagor_models
 
 
 def save_to_database(payload):
     # NOTE: This will be super dirty
     # got no time to fix this dumpster fire
+
+    # NOTE: FOR THE LOVE OF GOD USE A FUCKING SERIALIZER
+    # TO DO THIS SHIT WTF AM I DOING TO MYSELF
     farm = payload.pop('farm', None)
     if farm:
+        farm_model, created = sagor_models.Farm.objects.get_or_create(
+            id=farm['id'],
+            defaults=dict(name=uuid.uuid4())
+        )
         gateways = farm.pop('gateways', None)
         if isinstance(gateways, list):
             for gateway in gateways:
-                packages = gateway.pop('packages', None)
-                if isinstance(packages, list):
-                    for package in packages:
-                        sensors = package.pop('sensors', None)
-                        if isinstance(sensors, list):
-                            for sensor in sensors:
-                                # save them here!
-                                pass
+                gateway_model, created = sagor_models.Gateway.objects.get_or_create(
+                    id=gateway['id'],
+                    farm_id=farm_model.id,
+                    defaults=dict(
+                        status=sagor_models.Gateway.Status.OK
+                    )
+                )
+                tanks = gateway.pop('tanks', None)
+                if isinstance(tanks, list):
+                    for tank in tanks:
+                        tank_model, created = sagor_models.Tank.objects.get_or_create(
+                            id=tank['id'],
+                            gateway_id=gateway_model.id
+                        )
+                        packages = tank.pop('packages', None)
+                        if isinstance(packages, list):
+                            for package in packages:
+                                package_model, created = sagor_models.Package.objects.get_or_create(
+                                    id=package['id'],
+                                    tank_id=tank_model.id,
+                                    defaults=dict(
+                                        status=sagor_models.Gateway.Status.OK
+                                    )
+                                )
+                                ph_sensor_readings = package.pop('ph_sensor_readings', None)
+                                if isinstance(ph_sensor_readings, list):
+                                    for reading in ph_sensor_readings:
+                                        sagor_models.PHSensorReading.objects.create(
+                                            value=reading['value'],
+                                            reading_status=sagor_models.PHSensorReading.ReadingStatus.SANE,
+                                            read_every='1000',
+                                            package_id=package_model.id
+                                        )
+                                else:
+                                    raise Exception()
+
+                                temprature_sensor_readings = package.pop('temprature_sensor_readings', None)
+                                if isinstance(temprature_sensor_readings, list):
+                                    for reading in temprature_sensor_readings:
+                                        sagor_models.PHSensorReading.objects.create(
+                                            value=reading['value'],
+                                            reading_status=sagor_models.TempratureSensorReading.ReadingStatus.SANE,
+                                            read_every='1000',
+                                            package_id=package_model.id
+                                        )
+                                else:
+                                    raise Exception()
                         else:
                             raise Exception()
                 else:
