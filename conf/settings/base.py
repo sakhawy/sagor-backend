@@ -135,6 +135,11 @@ MQTT_MAIN_TOPIC = 'django/main-sagor-topic/#'
 MQTT_CLIENT_ID_PREFIX = 'sagor_'
 
 REST_FRAMEWORK = {
+    # pagination
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 100,
+
+    # drf_spectacular    
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
