@@ -5,4 +5,6 @@ pip install -r requirements-prod.txt
 
 python manage.py collectstatic --no-input
 
+python manage.py makemigrations
+
 python manage.py migrate

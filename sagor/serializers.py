@@ -7,19 +7,40 @@ from sagor import models
 class PHSensorReadingSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.PHSensorReading
-        fields = ('reading_status', 'read_every', 'value')
+        fields = (
+            'id',
+            'created_at',
+            'updated_at',
+            'reading_status',
+            'read_every',
+            'value',
+        )
 
 
 class TempratureSensorReadingSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.TempratureSensorReading
-        fields = ('reading_status', 'read_every', 'value')
+        fields = (
+            'id',
+            'created_at',
+            'updated_at',
+            'reading_status',
+            'read_every',
+            'value',
+        )
 
 
 class CameraSensorReadingSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.CameraSensorReading
-        fields = ('reading_status', 'read_every', 'value')
+        fields = (
+            'id',
+            'created_at',
+            'updated_at',
+            'reading_status',
+            'read_every',
+            'value',
+        )
 
 
 class PackageSerializer(WritableNestedModelSerializer):
@@ -30,8 +51,9 @@ class PackageSerializer(WritableNestedModelSerializer):
     class Meta:
         model = models.Package
         fields = (
-            'status', 
-            'last_checked_at', 
+            'id',
+            'status',
+            'last_checked_at',
             'ph_sensor_readings',
             'temprature_sensor_readings',
             'camera_sensor_readings',
@@ -44,6 +66,7 @@ class TankSerializer(WritableNestedModelSerializer):
     class Meta:
         model = models.Tank
         fields = (
+            'id',
             'fish_type',
             'status',
             'packages',
@@ -56,6 +79,7 @@ class GatewaySerializer(WritableNestedModelSerializer):
     class Meta:
         model = models.Gateway
         fields = (
+            'id',
             'broker_url',
             'ip',
             'status',
@@ -69,7 +93,13 @@ class FarmSerializer(WritableNestedModelSerializer):
 
     class Meta:
         model = models.Farm
-        fields = ('name', 'gateways')
+        fields = (
+            'id',
+            'created_at',
+            'updated_at',
+            'name',
+            'gateways'
+        )
 
 class IoTDataSerializer(serializers.Serializer):
     farm = FarmSerializer(many=False)

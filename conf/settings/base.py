@@ -116,17 +116,6 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-REST_FRAMEWORK = {
-    
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
-
-}
-
-
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=15),
     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=15),
@@ -146,6 +135,11 @@ MQTT_MAIN_TOPIC = 'django/main-sagor-topic/#'
 MQTT_CLIENT_ID_PREFIX = 'sagor_'
 
 REST_FRAMEWORK = {
+    # pagination
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 100,
+
+    # drf_spectacular    
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
