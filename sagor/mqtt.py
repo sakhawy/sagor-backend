@@ -37,6 +37,7 @@ class Client:
     def on_message(self, client, userdata, msg):
         try:
             payload = json.loads(msg.payload.decode())
+            print(payload)
         except Exception as e:
             raise Exception(e)
         
