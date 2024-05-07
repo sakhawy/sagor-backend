@@ -133,7 +133,7 @@ class PumpedFood(TimeStampedModel):
         ERROR = 'ERROR', 'Error'
 
     
-    quantity = models.DecimalField(decimal_places=4, max_digits=10)
+    quantity = models.DecimalField(decimal_places=5, max_digits=10)
     status = models.CharField(
         max_length=250,
         choices=Status.choices,
@@ -168,7 +168,7 @@ class BaseSensorReading(TimeStampedModel):
 
 
 class PHSensorReading(BaseSensorReading):
-    value = models.DecimalField(decimal_places=10, max_digits=10)
+    value = models.DecimalField(decimal_places=5, max_digits=10)
     package = models.ForeignKey(
         'Package',
         on_delete=models.CASCADE,
@@ -176,7 +176,7 @@ class PHSensorReading(BaseSensorReading):
     )
 
 class TempratureSensorReading(BaseSensorReading):
-    value = models.DecimalField(decimal_places=10, max_digits=10)
+    value = models.DecimalField(decimal_places=5, max_digits=10)
     package = models.ForeignKey(
         'Package',
         on_delete=models.CASCADE,
