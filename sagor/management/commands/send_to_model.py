@@ -1,5 +1,6 @@
 import datetime
 import json
+from pathlib import Path
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
@@ -25,7 +26,7 @@ class Command(BaseCommand):
         results = client.predict(
             images={
                 # hard-coded; fuck me
-                "video": file('sagor-test.mp4')
+                "video": file(settings.MEDIA_ROOT / 'sagor-test.mp4')
             },
 		    api_name=settings.SAGOR_MODEL_CLIENT_ENDPOINT
         )
