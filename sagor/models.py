@@ -1,5 +1,9 @@
+import datetime
+from typing import Iterable
 import uuid
 
+from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 
 
@@ -130,6 +134,7 @@ class Pump(TimeStampedModel):
 class PumpedFood(TimeStampedModel):
     class Status(models.TextChoices):
         OK = 'OK', 'Ok'
+        PENDING = 'PENDING', 'Pending'
         ERROR = 'ERROR', 'Error'
 
     
@@ -139,12 +144,29 @@ class PumpedFood(TimeStampedModel):
         choices=Status.choices,
         default=Status.OK
     )
+    should_pump_at = models.DateTimeField(blank=True, null=True)
+    pumped_at = models.DateTimeField(blank=True, null=True) 
 
     pump = models.ForeignKey(
         'Pump',
         on_delete=models.CASCADE,
         related_name='pumped_food',
     )
+
+    def save(self, *args, **kwargs) -> None:
+        # validate pumping datetimes
+        if self.should_pump_at.hour not in [7, 16]:
+            raise ValidationError('Invalid feeding hour!', code='invalid')
+        if PumpedFood.objects.filter(
+            pump=self.pump,
+            should_pump_at__date=datetime.datetime.today().date()
+        ).count() > settings.MAX_FEEDING_TIMES-1:  # no more than 2 times a day
+            raise Exception(
+                f'Maximum times to feed the fish {settings.MAX_FEEDING_TIMES} '
+                'has been reached.',
+            )
+
+        return super().save(*args, **kwargs)
 
 
 class BaseSensorReading(TimeStampedModel):
