@@ -111,6 +111,10 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# Media files
+MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = 'media/'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -152,3 +156,7 @@ SPECTACULAR_SETTINGS = {
     'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
     'REDOC_DIST': 'SIDECAR',
 }
+
+SAGOR_MODEL_CLIENT = 'Raniahossam33/fish'
+SAGOR_MODEL_CLIENT_ENDPOINT = '/predict'
+MAX_FEEDING_TIMES = 2
