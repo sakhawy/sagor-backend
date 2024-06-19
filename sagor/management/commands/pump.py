@@ -26,7 +26,7 @@ class Command(BaseCommand):
         with transaction.atomic():
             # no date validation for ease of execution
             pump_requests = models.PumpedFood.objects.filter(
-                # status=models.PumpedFood.Status.PENDING
+                status=models.PumpedFood.Status.PENDING
             ).select_for_update()
 
             for pump_request in pump_requests:
