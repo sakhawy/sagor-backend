@@ -26,18 +26,19 @@ class Command(BaseCommand):
         with transaction.atomic():
             # no date validation for ease of execution
             pump_requests = models.PumpedFood.objects.filter(
-                status=models.PumpedFood.Status.PENDING
+                # status=models.PumpedFood.Status.PENDING
             ).select_for_update()
 
             for pump_request in pump_requests:
                 sub_topic = (
-                    f'{pump_request.pump.tank.gateway.farm.id}/'
-                    f'{pump_request.pump.tank.gateway.id}/'
-                    f'{pump_request.pump.tank.id}/'
-                    f'{pump_request.pump.id}/'
+                    f'{pump_request.pump.tank.gateway.farm.id}/#'
+                    f'{pump_request.pump.tank.gateway.id}/#'
+                    f'{pump_request.pump.tank.id}/#'
+                    f'{pump_request.pump.id}/#'
                 )
                 topic = settings.MQTT_MAIN_TOPIC[:-1] + sub_topic
                 quantity = pump_request.quantity
+
 
                 # publish
                 call_command(
