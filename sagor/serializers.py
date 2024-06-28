@@ -108,3 +108,26 @@ class IoTDataSerializer(serializers.Serializer):
         farm_serializer = FarmSerializer(data=validated_data['farm'])
         if farm_serializer.is_valid(raise_exception=True):
             return farm_serializer.save()
+
+
+class PumpedFoodSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.PumpedFood
+        fields = (
+            'id',
+            'created_at',
+            'updated_at',
+            'status',
+        )
+
+
+class PumpSerializer(WritableNestedModelSerializer):
+    pumped_food = PumpedFoodSerializer(many=True)
+
+    class Meta:
+        model = models.Pump
+        fields = (
+            'id',
+            'status',
+            'pumped_food',
+        )

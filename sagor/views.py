@@ -37,3 +37,13 @@ class TempratureSensorReadingViewSet(ReadOnlyModelViewSet):
 class CameraSensorReadingViewSet(ReadOnlyModelViewSet):
     queryset = models.CameraSensorReading.objects.all()
     serializer_class = serializers.CameraSensorReadingSerializer
+
+
+class PumpedFoodViewSet(ReadOnlyModelViewSet):
+    queryset = models.PumpedFood.objects.all()
+    serializer_class = serializers.PumpedFoodSerializer
+
+
+class PumpViewSet(ReadOnlyModelViewSet):
+    queryset = models.Pump.objects.all()
+    serializer_class = serializers.PumpSerializer

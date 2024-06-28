@@ -31,9 +31,9 @@ class Command(BaseCommand):
 
             for pump_request in pump_requests:
                 sub_topic = (
-                    f'{pump_request.pump.tank.gateway.farm.id}/#'
-                    f'{pump_request.pump.tank.gateway.id}/#'
-                    f'{pump_request.pump.tank.id}/#'
+                    f'{pump_request.pump.tank.gateway.farm.id}/'
+                    f'{pump_request.pump.tank.gateway.id}/'
+                    f'{pump_request.pump.tank.id}/'
                     f'{pump_request.pump.id}/#'
                 )
                 topic = settings.MQTT_MAIN_TOPIC[:-1] + sub_topic
